@@ -84,37 +84,47 @@ router.get("/getGroceryCategory/:category", async (req, res) => {
   }
 });
 
-router.put("/editGroceryId/:ID",auth, authorizeRole("admin"), async (req, res) => {
-  const { ID } = req.params;
-  const updatedData = req.body;
-  try {
-    const updatedGrocery = await Grocery.findByIdAndUpdate(ID, updatedData);
-    if (!updatedGrocery) {
-      return res.status(400).json({ message: "Grocery item not found" });
+router.put(
+  "/editGroceryId/:ID",
+  auth,
+  authorizeRole("admin"),
+  async (req, res) => {
+    const { ID } = req.params;
+    const updatedData = req.body;
+    try {
+      const updatedGrocery = await Grocery.findByIdAndUpdate(ID, updatedData);
+      if (!updatedGrocery) {
+        return res.status(400).json({ message: "Grocery item not found" });
+      }
+      res.status(202).json({
+        message: "Grocery item updated successfully",
+        grocery: updatedGrocery,
+      });
+    } catch (error) {
+      res.status(500).json({ message: "Error updating grocery", error });
     }
-    res.status(202).json({
-      message: "Grocery item updated successfully",
-      grocery: updatedGrocery,
-    });
-  } catch (error) {
-    res.status(500).json({ message: "Error updating grocery", error });
   }
-});
+);
 
-router.delete("/deleteGroceryId/:ID",auth, authorizeRole("admin"), async (req, res) => {
-  const { ID } = req.params;
+router.delete(
+  "/deleteGroceryId/:ID",
+  auth,
+  authorizeRole("admin"),
+  async (req, res) => {
+    const { ID } = req.params;
 
-  try {
-    const deleteGrocery = await Grocery.findByIdAndDelete(ID);
+    try {
+      const deleteGrocery = await Grocery.findByIdAndDelete(ID);
 
-    if (!deleteGrocery) {
-      return res.status(404).json({ message: "Grocery item not found" });
+      if (!deleteGrocery) {
+        return res.status(404).json({ message: "Grocery item not found" });
+      }
+
+      res.status(200).json({ message: "Grocery item deleted successfully" });
+    } catch (error) {
+      res.status(500).json({ message: "Error deleting grocery", error });
     }
-
-    res.status(200).json({ message: "Grocery item deleted successfully" });
-  } catch (error) {
-    res.status(500).json({ message: "Error deleting grocery", error });
   }
-});
+);
 
 module.exports = router;
