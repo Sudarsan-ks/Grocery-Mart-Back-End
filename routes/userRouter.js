@@ -150,9 +150,9 @@ router.post("/resetPassword", async (req, res) => {
     const hashPassword = await bcrypt.hash(password, 8);
     await User.updateOne({ phone }, { password: hashPassword });
     await Otp.deleteOne({ phone, otp });
-    res.status(202).json({ message: "OTP verified successfully" });
+    res.status(202).json({ message: "Password Reseted successfully" });
   } catch (error) {
-    res.status(501).json({ message: "Error in verifying the OTP", error });
+    res.status(501).json({ message: "Error in resetting the password", error });
   }
 });
 
