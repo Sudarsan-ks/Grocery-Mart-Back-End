@@ -109,7 +109,7 @@ router.post("/verifyOtp", async (req, res) => {
   try {
     const otpcheck = await Otp.findOne({ phone, otp });
     if (!otpcheck) {
-      return res.status(404).json({ message: "Invalid number or expire OTP" });
+      return res.status(404).json({ message: "Invalid or expire OTP" });
     }
     await User.updateOne({ phone }, { isVerified: true });
     await Otp.deleteOne({ phone, otp });
@@ -137,6 +137,22 @@ router.post("/resendOtp", async (req, res) => {
     res.status(202).json({ message: "OTP Resended successfully" });
   } catch (error) {
     res.status(501).json({ message: "Error in resending the OTP", error });
+  }
+});
+
+router.post("/resetPassword", async (req, res) => {
+  const { phone, otp, password } = req.body;
+  try {
+    const otpcheck = await Otp.findOne({ phone, otp });
+    if (!otpcheck) {
+      return res.status(404).json({ message: "Invalid number or expire OTP" });
+    }
+    const hashPassword = await bcrypt.hash(password, 8);
+    await User.updateOne({ phone }, { password: hashPassword });
+    await Otp.deleteOne({ phone, otp });
+    res.status(202).json({ message: "OTP verified successfully" });
+  } catch (error) {
+    res.status(501).json({ message: "Error in verifying the OTP", error });
   }
 });
 
