@@ -5,13 +5,12 @@ const Cart = require("../models/addToCart");
 const crypto = require("crypto");
 const router = express.Router();
 
-const rarzorpay = new Razorpay({
-  key_id: process.env.RAZORPAY_KEY_ID,
-  key_secret: process.env.RAZORPAY_KEY_SECRET,
-});
-
 router.post("/payment", async (req, res) => {
-  const { userID, paymentMethod } = req.body;
+  const rarzorpay = new Razorpay({
+    key_id: process.env.RAZORPAY_KEY_ID,
+    key_secret: process.env.RAZORPAY_KEY_SECRET,
+  });
+  const { userID } = req.body;
   try {
     const cart = await Cart.findOne({ user: userID }).populate("items.product");
     if (!cart) {
