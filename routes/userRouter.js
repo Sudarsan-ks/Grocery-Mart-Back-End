@@ -32,7 +32,7 @@ const emailOtp = async (email, otp) => {
 };
 
 router.post("/register", async (req, res) => {
-  const { name, email, phone, password, role } = req.body;
+  const { name, email, phone, password, role, adminSecret } = req.body;
   try {
     const existUser = await User.findOne({ phone });
     if (existUser) {
@@ -40,6 +40,14 @@ router.post("/register", async (req, res) => {
         .status(400)
         .json({ message: "User alreday exist with this Phone Number" });
     }
+    if (role === "admin") {
+      if (!adminSecret || adminSecret !== process.env.SECRET_KEY_ADMIN) {
+        return res
+          .status(403)
+          .json({ message: "Admin Secret key is require or invalid" });
+      }
+    }
+
     const hashPassword = await bcrypt.hash(password, 8);
     const newUser = new User({
       name,
@@ -66,7 +74,7 @@ router.post("/register", async (req, res) => {
 });
 
 router.post("/login", async (req, res) => {
-  const { phone, password, adminSecret } = req.body;
+  const { phone, password} = req.body;
   try {
     const user = await User.findOne({ phone });
     if (!user) {
@@ -78,14 +86,6 @@ router.post("/login", async (req, res) => {
     }
     if (!user.isVerified) {
       return res.status(401).json({ message: "Phone number not verified" });
-    }
-
-    if (user.role === "admin") {
-      if (!adminSecret || adminSecret === process.env.SECRET_KEY_ADMIN) {
-        return res
-          .status(403)
-          .json({ message: "Admin Secret key is require or invalid" });
-      }
     }
 
     secret =
