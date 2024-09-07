@@ -5,29 +5,29 @@ const auth = async (req, res, next) => {
   if (!token) {
     return res.status(404).json({ message: "No token provided" });
   }
-  jwt.decode(token, { complete: true }, (err, decode) => {
-    if (err || !decode) {
-      return res.status(403).json({ message: "Failed to decode token" });
-    }
-  });
+  const decoded = jwt.decode(token);
+  if (!decoded) {
+    return res.status(403).json({ message: "Failed to decode token" });
+  }
+
   const secret =
-    decoded.payload.role === "admin"
+    decoded.role === "admin"
       ? process.env.ADMIN_SECRET
       : process.env.USER_SECRET;
 
-  jwt.verify(token, secret, (err, decode) => {
+  jwt.verify(token, secret, (err, verified) => {
     if (err) {
       return res.status(402).json({ message: "Error in Autenticatting Token" });
     } else {
-      req.user = decode;
+      req.user = verified;
+      next();
     }
   });
-  next();
 };
 
-const authorizeRole = (...role) => {
+const authorizeRole = (...roles) => {
   return (req, res, next) => {
-    if (!role.includes(req.user.role)) {
+    if (!roles.includes(req.user.role)) {
       return res.status(403).json({ message: "Access denied" });
     }
     next();
