@@ -8,6 +8,11 @@ const userSchema = mongoose.Schema(
     password: { type: String, required: true },
     role: { type: String, enum: ["user", "admin"], default: "user" },
     isVerified: { type: Boolean, default: false },
+    orders: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "order",
+      required: true,
+    },
   },
   {
     timestamps: true,
