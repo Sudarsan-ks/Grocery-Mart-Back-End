@@ -156,4 +156,19 @@ router.post("/resetPassword", async (req, res) => {
   }
 });
 
+router.post("/userCount",async(req,res)=>{
+  try {
+    const usercount = await User.countDocuments()  
+    res.status(200).json({
+      message: "User count fetched successfully",
+      count: usercount
+    });
+  } catch (error) {
+    res.status(501).json({
+      message: "Error fetching User count",
+      error: error.message
+    });
+  }
+})
+
 module.exports = router;

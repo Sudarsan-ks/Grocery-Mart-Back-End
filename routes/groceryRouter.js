@@ -92,7 +92,7 @@ router.put(
     const { ID } = req.params;
     const updatedData = req.body;
     try {
-      const updatedGrocery = await Grocery.findByIdAndUpdate(ID, updatedData,{
+      const updatedGrocery = await Grocery.findByIdAndUpdate(ID, updatedData, {
         new: true,
         runValidators: true,
       });
@@ -129,5 +129,50 @@ router.delete(
     }
   }
 );
+
+router.post("/productCount", async (req, res) => {
+  try {
+    const productCount = await Grocery.countDocuments();
+    res.status(202).json({
+      message: "User count fetched successfully",
+      count: productCount,
+    });
+  } catch (error) {
+    res.status(502).json({
+      message: "Error fetching Product count",
+      error: error.message,
+    });
+  }
+});
+
+router.post("/InStock", async (req, res) => {
+  try {
+    const InStock = await Grocery.countDocuments({ availability: "Out Of Stock" });
+    res.status(200).json({
+      message: "In Stock count fetched successfully",
+      count: InStock
+    });
+  } catch (error) {
+    res.status(501).json({
+      message: "Error fetching In Stock count",
+      error: error.message,
+    });
+  }
+});
+
+router.post("/outOfStock", async (req, res) => {
+  try {
+    const outOfStock = await Grocery.countDocuments({ availability: "In Stock" });
+    res.status(201).json({
+      message: "Out of Stock count fetched successfully",
+      count: outOfStock,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Error fetching Out of Stock count",
+      error: error.message,
+    });
+  }
+});
 
 module.exports = router;
