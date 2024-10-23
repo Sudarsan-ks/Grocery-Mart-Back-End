@@ -5,9 +5,12 @@ const auth = async (req, res, next) => {
   if (!token) {
     return res.status(404).json({ message: "No token provided" });
   }
-  const decoded = jwt.decode(token);
-  if (!decoded) {
-    return res.status(403).json({ message: "Failed to decode token" });
+  
+  let decoded;
+  try {
+    decoded = jwt.verify(token, process.env.USER_SECRET);
+  } catch (error) {
+    return res.status(403).json({ message: "Failed to verify token" });
   }
 
   const secret =
