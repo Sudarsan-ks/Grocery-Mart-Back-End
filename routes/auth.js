@@ -6,17 +6,15 @@ const auth = async (req, res, next) => {
     return res.status(404).json({ message: "No token provided" });
   }
   
-  let decoded;
-  try {
-    decoded = jwt.verify(token, process.env.USER_SECRET);
-  } catch (error) {
-    return res.status(403).json({ message: "Failed to verify token" });
+  const decoded = jwt.decode(token);
+  if (!decoded) {
+    return res.status(403).json({ message: "Failed to decode token" });
   }
 
   const secret =
     decoded.role === "admin"
-      ? process.env.ADMIN_SECRET
-      : process.env.USER_SECRET;
+      ? process.env.SECRET_KEY_ADMIN
+      : process.env.SECRET_KEY_USER;
 
   jwt.verify(token, secret, (err, verified) => {
     if (err) {
