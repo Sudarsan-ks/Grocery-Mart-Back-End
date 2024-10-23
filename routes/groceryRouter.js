@@ -92,7 +92,10 @@ router.put(
     const { ID } = req.params;
     const updatedData = req.body;
     try {
-      const updatedGrocery = await Grocery.findByIdAndUpdate(ID, updatedData);
+      const updatedGrocery = await Grocery.findByIdAndUpdate(ID, updatedData,{
+        new: true,
+        runValidators: true,
+      });
       if (!updatedGrocery) {
         return res.status(400).json({ message: "Grocery item not found" });
       }
