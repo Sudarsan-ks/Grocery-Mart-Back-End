@@ -130,7 +130,7 @@ router.delete(
   }
 );
 
-router.post("/productCount", async (req, res) => {
+router.get("/productCount", async (req, res) => {
   try {
     const productCount = await Grocery.countDocuments();
     res.status(202).json({
@@ -145,7 +145,7 @@ router.post("/productCount", async (req, res) => {
   }
 });
 
-router.post("/InStock", async (req, res) => {
+router.get("/InStock", async (req, res) => {
   try {
     const InStock = await Grocery.countDocuments({ availability: "Out Of Stock" });
     res.status(200).json({
@@ -160,7 +160,7 @@ router.post("/InStock", async (req, res) => {
   }
 });
 
-router.post("/outOfStock", async (req, res) => {
+router.get("/outOfStock", async (req, res) => {
   try {
     const outOfStock = await Grocery.countDocuments({ availability: "In Stock" });
     res.status(201).json({

@@ -156,7 +156,7 @@ router.post("/resetPassword", async (req, res) => {
   }
 });
 
-router.post("/userCount",async(req,res)=>{
+router.get("/userCount",async(req,res)=>{
   try {
     const usercount = await User.countDocuments()  
     res.status(200).json({
