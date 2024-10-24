@@ -8,20 +8,6 @@ const transporter = require("../email");
 const twilio = require("twilio");
 const crypto = require("crypto");
 
-const client = twilio(
-  process.env.TWILIO_ACCOUNT_SID,
-  process.env.TWILIO_AUTH_TOKEN
-);
-
-const smsOtp = async (phone, otp) => {
-  phone = `+91${phone}`;
-  await client.messages.create({
-    body: `Your OTP for verifying you account is ${otp}, Valid only for 4 minutes`,
-    from: process.env.TWILIO_PHONE_NUMBER,
-    to: phone,
-  });
-};
-
 const emailOtp = async (email, otp) => {
   await transporter.sendMail({
     from: process.env.EMAIL_USER,
@@ -62,7 +48,6 @@ router.post("/register", async (req, res) => {
     const newOtp = new Otp({ phone, otp });
     await newOtp.save();
 
-    await smsOtp(phone, otp);
     await emailOtp(email, otp);
 
     res.status(201).json({
@@ -132,7 +117,7 @@ router.post("/resendOtp", async (req, res) => {
     const resendOtp = new Otp({ phone, otp });
     await resendOtp.save();
 
-    await smsOtp(phone, otp);
+    await emailOtp(phone, otp);
 
     res.status(202).json({ message: "OTP Resended successfully" });
   } catch (error) {
