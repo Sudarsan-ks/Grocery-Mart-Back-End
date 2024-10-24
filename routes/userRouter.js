@@ -20,11 +20,11 @@ const emailOtp = async (email, otp) => {
 router.post("/register", async (req, res) => {
   const { name, email, phone, password, role, adminSecret } = req.body;
   try {
-    const existUser = await User.findOne({ phone });
+    const existUser = await User.findOne({ email });
     if (existUser) {
       return res
         .status(400)
-        .json({ message: "User alreday exist with this Phone Number" });
+        .json({ message: "User alreday exist with this Email" });
     }
     if (role === "admin") {
       if (!adminSecret || adminSecret !== process.env.SECRET_KEY_ADMIN) {
@@ -45,13 +45,13 @@ router.post("/register", async (req, res) => {
     await newUser.save();
 
     const otp = crypto.randomInt(100000, 999999).toString();
-    const newOtp = new Otp({ phone, otp });
+    const newOtp = new Otp({ email, otp });
     await newOtp.save();
 
     await emailOtp(email, otp);
 
     res.status(201).json({
-      message: "Register successfully. Please verify you phone number",
+      message: "Register successfully. Please verify you Email ID",
     });
   } catch (error) {
     res.status(500).json({ message: "Error registering user", error });
@@ -70,7 +70,7 @@ router.post("/login", async (req, res) => {
       return res.status(400).json({ message: "Invaild credential" });
     }
     if (!user.isVerified) {
-      return res.status(401).json({ message: "Phone number not verified" });
+      return res.status(401).json({ message: "Email ID not verified" });
     }
 
     secret =
@@ -90,14 +90,14 @@ router.post("/login", async (req, res) => {
 });
 
 router.post("/verifyOtp", async (req, res) => {
-  const { phone, otp } = req.body;
+  const { email, otp } = req.body;
   try {
-    const otpcheck = await Otp.findOne({ phone, otp });
+    const otpcheck = await Otp.findOne({ email, otp });
     if (!otpcheck) {
       return res.status(404).json({ message: "Invalid or expire OTP" });
     }
-    await User.updateOne({ phone }, { isVerified: true });
-    await Otp.deleteOne({ phone, otp });
+    await User.updateOne({ phoemailne }, { isVerified: true });
+    await Otp.deleteOne({ email, otp });
     res.status(202).json({ message: "OTP verified successfully" });
   } catch (error) {
     res.status(501).json({ message: "Error in verifying the OTP", error });
@@ -105,19 +105,19 @@ router.post("/verifyOtp", async (req, res) => {
 });
 
 router.post("/resendOtp", async (req, res) => {
-  const { phone } = req.body;
+  const { email } = req.body;
   try {
-    const user = await User.findOne({ phone });
+    const user = await User.findOne({ email });
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
-    await Otp.deleteMany({ phone });
+    await Otp.deleteMany({ email });
 
     const otp = crypto.randomInt(100000, 999999).toString();
-    const resendOtp = new Otp({ phone, otp });
+    const resendOtp = new Otp({ email, otp });
     await resendOtp.save();
 
-    await emailOtp(phone, otp);
+    await emailOtp(email, otp);
 
     res.status(202).json({ message: "OTP Resended successfully" });
   } catch (error) {
@@ -126,15 +126,15 @@ router.post("/resendOtp", async (req, res) => {
 });
 
 router.post("/resetPassword", async (req, res) => {
-  const { phone, otp, password } = req.body;
+  const { email, otp, password } = req.body;
   try {
-    const otpcheck = await Otp.findOne({ phone, otp });
+    const otpcheck = await Otp.findOne({ email, otp });
     if (!otpcheck) {
       return res.status(404).json({ message: "Invalid number or expire OTP" });
     }
     const hashPassword = await bcrypt.hash(password, 8);
-    await User.updateOne({ phone }, { password: hashPassword });
-    await Otp.deleteOne({ phone, otp });
+    await User.updateOne({ email }, { password: hashPassword });
+    await Otp.deleteOne({ email, otp });
     res.status(202).json({ message: "Password Reseted successfully" });
   } catch (error) {
     res.status(501).json({ message: "Error in resetting the password", error });
