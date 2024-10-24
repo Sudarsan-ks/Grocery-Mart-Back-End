@@ -147,10 +147,10 @@ router.get("/productCount", async (req, res) => {
 
 router.get("/InStock", async (req, res) => {
   try {
-    const InStock = await Grocery.countDocuments({ availability: "Out Of Stock" });
+    const InStock = await Grocery.countDocuments({ availability: "In Stock" });
     res.status(200).json({
       message: "In Stock count fetched successfully",
-      count: InStock
+      count: InStock,
     });
   } catch (error) {
     res.status(501).json({
@@ -162,7 +162,9 @@ router.get("/InStock", async (req, res) => {
 
 router.get("/outOfStock", async (req, res) => {
   try {
-    const outOfStock = await Grocery.countDocuments({ availability: "In Stock" });
+    const outOfStock = await Grocery.countDocuments({
+      availability: "Out Of Stock",
+    });
     res.status(201).json({
       message: "Out of Stock count fetched successfully",
       count: outOfStock,
