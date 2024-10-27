@@ -177,4 +177,21 @@ router.get("/outOfStock", async (req, res) => {
   }
 });
 
+router.get("/seasonal", async (req, res) => {
+  try {
+    const seasonal = await Grocery.countDocuments({
+      availability: "Seasonal",
+    });
+    res.status(201).json({
+      message: "Seasonal count fetched successfully",
+      count: seasonal,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Error fetching Seasonal count",
+      error: error.message,
+    });
+  }
+});
+
 module.exports = router;
