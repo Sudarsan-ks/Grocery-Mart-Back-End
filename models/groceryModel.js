@@ -23,7 +23,7 @@ const grocerySchema = mongoose.Schema({
   description: { type: String, required: true },
   availability: {
     type: String,
-    enum: ["In Stock", "Out Of Stock"],
+    enum: ["In Stock", "Out Of Stock", "Seasonal"],
     required: true,
   },
 });
