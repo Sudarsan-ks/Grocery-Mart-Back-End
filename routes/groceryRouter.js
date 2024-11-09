@@ -29,7 +29,7 @@ router.post("/addGrocery", auth, authorizeRole("admin"), async (req, res) => {
         .json({ message: "Please provide all require feilds" });
     }
 
-    const newGrocery = {
+    const newGrocery = new Grocery({
       name,
       category,
       pricePerKg,
@@ -37,7 +37,7 @@ router.post("/addGrocery", auth, authorizeRole("admin"), async (req, res) => {
       rating,
       description,
       availability,
-    };
+    });
     await newGrocery.save();
     res
       .status(201)
