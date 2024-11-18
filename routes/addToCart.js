@@ -4,7 +4,7 @@ const Grocery = require("../models/groceryModel");
 const { auth } = require("./auth");
 const router = express.Router();
 
-router.post("/addCart", auth, authorizeRole("admin"), async (req, res) => {
+router.post("/addCart", auth, async (req, res) => {
   const { userId, productId, quantity } = req.body;
   try {
     const product = await Grocery.findById(productId);
