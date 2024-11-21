@@ -37,9 +37,8 @@ router.post("/addCart", auth, async (req, res) => {
 });
 
 router.get("/getCart", async (req, res) => {
-  const { userID } = req.body;
   try {                                               
-    const cart = await Cart.find({ user: userID }).populate("items.product");
+    const cart = await Cart.find().populate("items.product");
     if (!cart) {
       return res.status(404).json({ message: "Cart not found for this user" });
     }
