@@ -37,7 +37,7 @@ router.post("/addCart", auth, async (req, res) => {
 });
 
 router.get("/getCart", async (req, res) => {
-  try {                                               
+  try {
     const cart = await Cart.find().populate("items.product");
     if (!cart) {
       return res.status(404).json({ message: "Cart not found for this user" });
@@ -66,6 +66,9 @@ router.put("/editItem/:itemID", async (req, res) => {
   const { quantity } = req.body;
   try {
     const cart = await Cart.findOne({ "items._id": itemID });
+    if (!cart) {
+      return res.status(404).json({ message: "Cart not found" });
+    }
     const item = cart.items.id(itemID);
     if (!item) {
       return res.status(404).json({ message: "Item not found" });
