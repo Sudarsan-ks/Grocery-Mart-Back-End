@@ -65,7 +65,9 @@ router.put("/editItem/:itemID", async (req, res) => {
   const { itemID } = req.params;
   const { quantity } = req.body;
   try {
-    const cart = await Cart.findOne({ "items._id": itemID });
+    const cart = await Cart.findOne({ "items._id": itemID }).populate(
+      "items.product"
+    );
     if (!cart) {
       return res.status(404).json({ message: "Cart not found" });
     }
