@@ -33,6 +33,7 @@ router.post("/payment", async (req, res) => {
     res.status(200).json({
       orderId: razorpayOrder.id,
       amount: razorpayOrder.amount,
+      currency: razorpayOrder.currency,
     });
   } catch (error) {
     res.status(501).json({ message: "Error in payment", error });
