@@ -28,9 +28,10 @@ router.post("/payment", async (req, res) => {
       status: "Pending",
     });
     await order.save();
-    await Cart.findOneAndDelete({ user: userId });
+    await Cart.findOneAndDelete({ user: userID });
 
     res.status(200).json({
+      success: true,
       orderId: razorpayOrder.id,
       amount: razorpayOrder.amount,
       currency: razorpayOrder.currency,
