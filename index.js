@@ -7,6 +7,7 @@ const UserRouter = require("./routes/userRouter");
 const GroceryRouter = require("./routes/groceryRouter");
 const OrderRouter = require("./routes/orderRouter");
 const CartRouter = require("./routes/addToCart");
+const AddressRouter = require("./routes/addressRouter");
 
 const PORT = process.env.PORT;
 const app = express();
@@ -25,6 +26,7 @@ app.use("/user", UserRouter);
 app.use("/cart", CartRouter);
 app.use("/grocery", GroceryRouter);
 app.use("/order", OrderRouter);
+app.use("/address", AddressRouter);
 
 app.get("/", (req, res) => {
   res.send("WELCOME TO GROCERY MART");
