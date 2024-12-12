@@ -31,13 +31,13 @@ router.post("/add-address", async (req, res) => {
 router.get("/get-address/:userID", async (req, res) => {
   const { userID } = req.params;
   try {
-    const address = Address.findOne({ userID });
+    const address = Address.findOne({ user: userID });
     if (!address) {
-      return res.status(401).json({ message: "Address not found" });
+      return res.status(404).json({ message: "Address not found" });
     }
     res.status(200).json({ address });
   } catch (error) {
-    res.status(501).json({ message: "Error in fetching address", error });
+    res.status(500).json({ message: "Error in fetching address", error });
   }
 });
 
