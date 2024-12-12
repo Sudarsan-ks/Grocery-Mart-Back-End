@@ -11,6 +11,12 @@ router.post("/add-address", async (req, res) => {
         .status(400)
         .json({ message: "Please provide all require feilds" });
     }
+
+    const existAddress = await Address.findOne({ user });
+    if (existAddress) {
+      return res.status(400).json({ message: "Address already exists for this user." });
+    }
+
     const newAddress = new Address({
       user,
       street,
@@ -31,7 +37,7 @@ router.post("/add-address", async (req, res) => {
 router.get("/get-address/:userID", async (req, res) => {
   const { userID } = req.params;
   try {
-    const address = Address.findOne({ user: userID });
+    const address = await Address.findOne({ user: userID });
     if (!address) {
       return res.status(404).json({ message: "Address not found" });
     }
