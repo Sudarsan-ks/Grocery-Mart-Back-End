@@ -37,7 +37,28 @@ router.post("/payment", async (req, res) => {
       currency: razorpayOrder.currency,
     });
   } catch (error) {
-    res.status(501).json({ message: "Error in payment", error });
+    res.status(501).json({ message: "Error in Payment", error });
+  }
+});
+
+router.post("/verifyPayment", async (req, res) => {
+  const { razorpay_order_id, razorpay_payment_id, razorpay_signature } =
+    req.body;
+  try {
+    const generateSignature = crypto
+      .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
+      .update(`${razorpay_order_id}|${razorpay_payment_id}`)
+      .digest("hex");
+    if (generateSignature !== razorpay_signature) {
+      return res.status(404).json({ message: "Invalid Payment accured" });
+    }
+    res
+      .status(200)
+      .json({ success: true, message: "Payment Verified Successfully" });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ success: false, message: "Error in verifying the Payment" });
   }
 });
 
