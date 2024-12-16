@@ -14,7 +14,9 @@ router.post("/add-address", async (req, res) => {
 
     const existAddress = await Address.findOne({ user });
     if (existAddress) {
-      return res.status(400).json({ message: "Address already exists for this user." });
+      return res
+        .status(400)
+        .json({ message: "Address already exists for this user." });
     }
 
     const newAddress = new Address({
@@ -42,6 +44,23 @@ router.get("/get-address/:userID", async (req, res) => {
       return res.status(404).json({ message: "Address not found" });
     }
     res.status(200).json({ address });
+  } catch (error) {
+    res.status(500).json({ message: "Error in fetching address", error });
+  }
+});
+
+router.put("/put-address/:userID", async (req, res) => {
+  const { userID } = req.params;
+  try {
+    const updatedAddress = await Address.findOneAndUpdate(
+      { user: userID },
+      req.body,
+      { new: true }
+    );
+    if (!updatedAddress) {
+      return res.status(404).json({ message: "Address not found" });
+    }
+    res.status(200).json({ updatedAddress });
   } catch (error) {
     res.status(500).json({ message: "Error in fetching address", error });
   }
