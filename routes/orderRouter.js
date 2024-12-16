@@ -74,7 +74,7 @@ router.get("/getOrder", async (req, res) => {
 router.get("/getOrder/:userID", async (req, res) => {
   const { userID } = req.params;
   try {
-    const order = await Order.findOne({ user: userID }).populate(
+    const order = await Order.find({ user: userID }).populate(
       "items.product"
     );
     if (!order) {
