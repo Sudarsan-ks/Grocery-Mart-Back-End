@@ -51,10 +51,11 @@ router.get("/get-address/:userID", async (req, res) => {
 
 router.put("/put-address/:userID", async (req, res) => {
   const { userID } = req.params;
+  const updatedData = req.body;
   try {
     const updatedAddress = await Address.findOneAndUpdate(
       { user: userID },
-      req.body,
+      updatedData,
       { new: true }
     );
     if (!updatedAddress) {
