@@ -86,4 +86,20 @@ router.get("/getOrder/:userID", async (req, res) => {
   }
 });
 
+router.get("/getOrder/:orderID", async (req, res) => {
+  const { orderID } = req.params;
+  try {
+    const order = await Order.findById(orderID).populate(
+      "items.product"
+    );
+    if (!order) {
+      return res.status(402).json({ message: "Order not found" });
+    }
+    res.status(200).json(order);
+  } catch (error) {
+    res.status(502).json({ message: "Error fetching OrderedData", error });
+  }
+});
+
+
 module.exports = router;
