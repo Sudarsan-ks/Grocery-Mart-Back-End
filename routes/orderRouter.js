@@ -78,7 +78,7 @@ router.get("/getOrder/:userID", async (req, res) => {
       "items.product"
     );
     if (!order) {
-      return res.status(402).json({ message: "Order not found" });
+      return res.status(404).json({ message: "Order not found" });
     }
     res.status(200).json(order);
   } catch (error) {
@@ -93,11 +93,29 @@ router.get("/getOrder/:orderID", async (req, res) => {
       "items.product"
     );
     if (!order) {
-      return res.status(402).json({ message: "Order not found" });
+      return res.status(404).json({ message: "Order not found" });
     }
     res.status(200).json(order);
   } catch (error) {
     res.status(502).json({ message: "Error fetching OrderedData", error });
+  }
+});
+
+router.put("/updateStatus/:orderID", async (req, res) => {
+  const { orderID } = req.params;
+  const updatedData = req.body;
+  try {
+    const updatedStatus = await Order.findOneAndUpdate(
+      { _id: orderID },
+      updatedData,
+      { new: true }
+    );
+    if (!updatedStatus) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+    res.status(200).json({ updatedStatus });
+  } catch (error) {
+    res.status(500).json({ message: "Error in Updating Status", error });
   }
 });
 
