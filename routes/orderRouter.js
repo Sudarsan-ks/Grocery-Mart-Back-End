@@ -115,7 +115,7 @@ router.put("/updateStatus/:orderID", async (req, res) => {
   }
 });
 
-router.get("/deleteorder/:orderID", async (req, res) => {
+router.delete("/deleteorder/:orderID", async (req, res) => {
   const { orderID } = req.params;
   try {
     const deleteOrder = await Order.findByIdAndDelete(orderID);
