@@ -45,7 +45,7 @@ router.post("/verifyPayment", async (req, res) => {
   const { razorpay_order_id, razorpay_payment_id, razorpay_signature } =
     req.body;
   try {
-    const generateSignature =await crypto
+    const generateSignature = await crypto
       .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
       .update(`${razorpay_order_id}|${razorpay_payment_id}`)
       .digest("hex");
@@ -67,37 +67,33 @@ router.get("/getOrder", async (req, res) => {
     const order = await Order.find();
     res.status(201).json(order);
   } catch (error) {
-    res.status(502).json({ message: "Error fetching Ordereddata", error });
+    res.status(500).json({ message: "Error fetching Ordereddata", error });
   }
 });
 
 router.get("/getOrder/:userID", async (req, res) => {
   const { userID } = req.params;
   try {
-    const order = await Order.find({ user: userID }).populate(
-      "items.product"
-    );
+    const order = await Order.find({ user: userID }).populate("items.product");
     if (!order) {
       return res.status(404).json({ message: "Order not found" });
     }
     res.status(200).json(order);
   } catch (error) {
-    res.status(502).json({ message: "Error fetching OrderedData", error });
+    res.status(500).json({ message: "Error fetching OrderedData", error });
   }
 });
 
 router.get("/getOrder/:orderID", async (req, res) => {
   const { orderID } = req.params;
   try {
-    const order = await Order.findById(orderID).populate(
-      "items.product"
-    );
+    const order = await Order.findById(orderID).populate("items.product");
     if (!order) {
       return res.status(404).json({ message: "Order not found" });
     }
     res.status(200).json(order);
   } catch (error) {
-    res.status(502).json({ message: "Error fetching OrderedData", error });
+    res.status(500).json({ message: "Error fetching OrderedData", error });
   }
 });
 
@@ -119,5 +115,17 @@ router.put("/updateStatus/:orderID", async (req, res) => {
   }
 });
 
+router.get("/deleteorder/:orderID", async (req, res) => {
+  const { orderID } = req.params;
+  try {
+    const deleteOrder = await Order.findByIdAndDelete(orderID);
+    if (!deleteOrder) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+    res.status(200).json({ Message: "Order Deleted Successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching OrderedData", error });
+  }
+});
 
 module.exports = router;
