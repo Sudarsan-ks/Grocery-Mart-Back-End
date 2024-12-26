@@ -1,6 +1,5 @@
 const express = require("express");
 const Grocery = require("../models/groceryModel");
-const User = require("../models/userModel");
 const { auth, authorizeRole } = require("./auth");
 const router = express.Router();
 
