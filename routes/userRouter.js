@@ -1,10 +1,12 @@
 const express = require("express");
 const User = require("../models/userModel");
+const Otp = require("../models/otpModel");
 const router = express.Router();
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const transporter = require("../email");
 const crypto = require("crypto");
+
 
 const emailOtp = async (email, otp) => {
   await transporter.sendMail({
