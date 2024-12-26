@@ -13,7 +13,7 @@ const PORT = process.env.PORT;
 const app = express();
 
 const corsOptions = {
-  origin: process.env.CLIENT_URL,
+  origin: [process.env.CLIENT_URL, process.env.CLIENT_URL_NETLIFY],
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   credentials: true,
   optionsSuccessStatus: 204,
