@@ -96,7 +96,7 @@ router.post("/verifyOtp", async (req, res) => {
     if (!otpcheck) {
       return res.status(404).json({ message: "Invalid or expire OTP" });
     }
-    await User.updateOne({ phoemailne }, { isVerified: true });
+    await User.updateOne({ email }, { isVerified: true });
     await Otp.deleteOne({ email, otp });
     res.status(202).json({ message: "OTP verified successfully" });
   } catch (error) {
