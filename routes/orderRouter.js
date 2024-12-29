@@ -74,7 +74,7 @@ router.get("/getOrder", async (req, res) => {
 router.get("/getOrder/:userID", async (req, res) => {
   const { userID } = req.params;
   try {
-    const order = await Order.find({ user: userID }).populate("items.product");
+    const order = await Order.find({ user: userID }).populate("items.product","user");
     if (!order) {
       return res.status(404).json({ message: "Order not found" });
     }
@@ -87,7 +87,7 @@ router.get("/getOrder/:userID", async (req, res) => {
 router.get("/getOrderDetails/:orderID", async (req, res) => {
   const { orderID } = req.params;
   try {
-    const order = await Order.findById(orderID).populate("items.product");
+    const order = await Order.findById(orderID).populate("items.product","user");
     if (!order) {
       return res.status(404).json({ message: "Order not found" });
     }
