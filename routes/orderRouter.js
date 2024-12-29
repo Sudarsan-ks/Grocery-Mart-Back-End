@@ -64,7 +64,7 @@ router.post("/verifyPayment", async (req, res) => {
 
 router.get("/getOrder", async (req, res) => {
   try {
-    const order = await Order.find();
+    const order = await Order.find().populate("user");
     res.status(201).json(order);
   } catch (error) {
     res.status(500).json({ message: "Error fetching Ordereddata", error });
