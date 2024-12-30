@@ -7,7 +7,6 @@ const jwt = require("jsonwebtoken");
 const transporter = require("../email");
 const crypto = require("crypto");
 
-
 const emailOtp = async (email, otp) => {
   await transporter.sendMail({
     from: process.env.EMAIL_USER,
@@ -59,7 +58,7 @@ router.post("/register", async (req, res) => {
 });
 
 router.post("/login", async (req, res) => {
-  const { phone, password} = req.body;
+  const { phone, password } = req.body;
   try {
     const user = await User.findOne({ phone });
     if (!user) {
@@ -141,19 +140,19 @@ router.post("/resetPassword", async (req, res) => {
   }
 });
 
-router.get("/userCount",async(req,res)=>{
+router.get("/userCount", async (req, res) => {
   try {
-    const usercount = await User.countDocuments()  
+    const usercount = await User.countDocuments();
     res.status(200).json({
       message: "User count fetched successfully",
-      count: usercount
+      count: usercount,
     });
   } catch (error) {
     res.status(501).json({
       message: "Error fetching User count",
-      error: error.message
+      error: error.message,
     });
   }
-})
+});
 
 module.exports = router;
