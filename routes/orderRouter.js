@@ -90,10 +90,7 @@ router.get("/getOrder/:userID", async (req, res) => {
 router.get("/getOrderDetails/:orderID", async (req, res) => {
   const { orderID } = req.params;
   try {
-    const order = await Order.findById(orderID).populate(
-      "items.product",
-      "user"
-    );
+    const order = await Order.findById(orderID).populate("items.product");
     if (!order) {
       return res.status(404).json({ message: "Order not found" });
     }
